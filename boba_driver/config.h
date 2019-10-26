@@ -36,13 +36,14 @@
 #define SS_FILL_BOBA_WATER 0
 #define SS_HEAT_BOBA_WATER 1
 #define SS_COOK_BOBA 2
-#define SS_BOBA_IDLE 3
+#define SS_BOBA_DONE 3
 
 // Cook tea substates
 #define SS_TEA_IDLE 0
 #define SS_FILL_TEA_WATER 1
 #define SS_HEAT_TEA_WATER 2
 #define SS_COOK_TEA 3
+#define SS_TEA_DONE 4
 
 
 // Temps 
