@@ -15,6 +15,7 @@ void setup() {
     pinMode(BOBA_TO_WASTE, OUTPUT);
     pinMode(TEABAG_MOTOR, OUTPUT);
     pinmode(TEA_TEMP_SENSOR, INPUT);
+    pinmode(STIR_FAN, OUTPUT);
     pinmode(BOBA_TEMP_SENSOR, INPUT);
     pinmode(TEA_HEATER, OUTPUT);
     pinmode(BOBA_HEATER, OUTPUT);
@@ -61,8 +62,10 @@ void cookHandler(){
             if((millis() - boba_start_time) > BOBA_WATER_FILL_TIME) {
                 digitalWrite(WATER_TO_BOBA, LOW);
                 boba_substate = SS_HEAT_BOBA_WATER;
+                analogWrite(STIR_FAN, STIR_LOW);
             } else {
                 digitalWrite(WATER_TO_BOBA, HIGH);
+                analogWrite(STIR_FAN, STIR_HIGH);
             }
             break;
         case SS_HEAT_BOBA_WATER:

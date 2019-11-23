@@ -9,6 +9,12 @@
 #define TEABAG_MOTOR 5
 #define BOBA_DROP_SERVO 11 // needs to be pwm
 
+// Stir fan
+#define STIR_FAN 6
+#define STIR_OFF 0
+#define STIR_LOW 100
+#define STIR_HIGH 255
+
 // Temp sensor
 #define TEA_TEMP_SENSOR 6
 #define BOBA_TEMP_SENSOR 7
