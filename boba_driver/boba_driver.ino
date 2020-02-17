@@ -2,6 +2,8 @@
 
 short state;
 unsigned long elapsed_time;
+double sugar_time;
+double boba_drop_time;
 
 void setup() {
 
@@ -45,6 +47,8 @@ void loop() {
 
 void idleHandler(){
     bool button = analogRead(START_COOK_BTN);
+    sugar_time = get_sugar_from_pot();
+    boba_drop_time = get_boba_from_pot();
     if(button){
         state = S_COOK;
     }
@@ -74,7 +78,7 @@ void cookHandler(){
                 
                 // Dispense raw boba
                 analogWrite(BOBA_DROP_SERVO, 50); // TODO: fix this position
-                delay(300); // wait for boba to fall
+                delay(boba_drop_time); // wait for boba to fall
                 analogWrite(BOBA_DROP_SERVO, 200); // TODO: fix this position
                 delay(20);
                 boba_dropped = true;
@@ -102,7 +106,7 @@ void cookHandler(){
             }
             break;
         case SS_FILL_TEA_WATER:
-            if((millis() - tea_start_time) > TEA_WATER_FILL_TIME) {
+            if((millis() - sugar_time) > TEA_WATER_FILL_TIME) {
                 digitalWrite(WATER_TO_TEA, LOW);
                 tea_substate = SS_HEAT_TEA_WATER;
             } else {
@@ -116,10 +120,14 @@ void cookHandler(){
                 analogWrite(TEABAG_MOTOR, 1700); // TODO: fix this position
                 delay(2000); // wait for tea to fall
                 analogWrite(TEABAG_MOTOR, 1500); // TODO: fix this position
+                digitalWrite(MILK_TO_TEA, HIGH); // TODO: THIS IS ALEX'S WORK AND IS LIKELY WRONG
                 tea_start_time = millis();
             }
             break;
         case SS_COOK_TEA:
+            if(millis() - tea_start_time >= TEA_COOK_TIME) {
+                digitalWrite(MILK_TO_TEA, LOW); // TODO: THIS IS ALEX'S WORK AND IS LIKELY WRONG
+            }
             if(millis() - tea_start_time >= TEA_COOK_TIME) {
                 // Raise teabag 
                 analogWrite(TEABAG_MOTOR, 1300);
@@ -152,4 +160,14 @@ void cookHandler(){
 
 void cleanHandler(){
 
+}
+
+double get_sugar_from_pot(){
+    // WILL NEED TO BE A CALIBRATED FUNCTION OF SOME KIND
+    return analogRead(SUGAR_LEVEL);
+}
+
+double get_boba_from_pot(){
+    // WILL NEED TO BE A CALIBRATED FUNCTION OF SOME KIND
+    return analogRead(BOBA_LEVEL);
 }

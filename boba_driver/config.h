@@ -31,6 +31,8 @@
 
 // User Input
 #define START_COOK_BTN 10
+#define SUGAR_LEVEL "UNKNOWN"
+#define BOBA_LEVEL "UNKNOWN"
 
 // States
 #define S_IDLE 0
