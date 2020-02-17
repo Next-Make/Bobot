@@ -1,9 +1,12 @@
 #include <config.h>
 
 short state;
+short clean_or_cook_mode = 0; //clean = 0, cook = 1
 unsigned long elapsed_time;
 double sugar_time;
 double boba_drop_time;
+unsigned long boba_start_time;
+unsigned long tea_start_time;
 
 void setup() {
 
@@ -22,6 +25,7 @@ void setup() {
     pinmode(TEA_HEATER, OUTPUT);
     pinmode(BOBA_HEATER, OUTPUT);
     pinMode(START_COOK_BTN, INPUT_PULLUP);
+    pinmode(TOGGLE_MODE_BTN, INPUT_PULLUP);
 
     state = S_IDLE;
 }
@@ -47,10 +51,21 @@ void loop() {
 
 void idleHandler(){
     bool button = analogRead(START_COOK_BTN);
+    bool mode_button = analogRead(TOGGLE_MODE_BTN);
     sugar_time = get_sugar_from_pot();
     boba_drop_time = get_boba_from_pot();
+    if(mode_button){
+        clean_or_cook_mode = 1 - clean_or_cook_mode; // Change between 0 and 1
+    }
     if(button){
-        state = S_COOK;
+        if(clean_or_cook_mode == 1){
+            state = S_COOK;
+            boba_start_time = millis();
+            tea_start_time = millis();
+        }
+        if(clean_or_cook_mode == 0){
+            state = S_CLEAN;
+        }
     }
 }
 
@@ -58,8 +73,6 @@ short boba_substate = SS_FILL_BOBA_WATER;
 short tea_substate = SS_TEA_IDLE;
 
 void cookHandler(){
-    static unsigned long boba_start_time = millis();
-    static unsigned long tea_start_time = millis();
 
     switch (boba_substate) {
         case SS_FILL_BOBA_WATER:
@@ -159,7 +172,17 @@ void cookHandler(){
 }
 
 void cleanHandler(){
-
+    bool button = analogRead(START_COOK_BTN);
+    if(button){
+        state = S_IDLE
+    }
+    else{
+        digitalWrite(WATER_TO_BOBA, HIGH);
+        digitalWrite(BOBA_TO_WASTE, HIGH);
+        digitalWrite(WATER_TO_TEA, HIGH);
+        digitalWrite(MILK_TO_TEA, HIGH); // PUT MILK PUMP INTO WATER TO CLEAN PUMP
+        digitalWrite(STIR_FAN, HIGH);  
+    }
 }
 
 double get_sugar_from_pot(){

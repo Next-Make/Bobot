@@ -28,11 +28,13 @@
 #define TEA_COOK_TIME 100000
 #define BOBA_WATER_FILL_TIME 1000 
 #define TEA_WATER_FILL_TIME 1000
+#define CLEAN_TIME 1000
 
 // User Input
 #define START_COOK_BTN 10
 #define SUGAR_LEVEL "UNKNOWN"
 #define BOBA_LEVEL "UNKNOWN"
+#define TOGGLE_MODE_BTN "UNKNOWN"
 
 // States
 #define S_IDLE 0
